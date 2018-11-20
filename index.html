@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+
+  <form action="/action_page.php" method="get" target="_blank">
+    First name: <input type="text" name="fname"><br>
+    Last name: <input type="text" name="lname"><br>
+    post: <textarea name="post" style="width:400px"></textarea><br>
+    <input type="submit" value="Submit">
+  </form>
+
+  <ul id="posts">
+
+  </ul>
+
+  <p>Click on the submit button, and the input will be sent to a page on the server called "/action_page.php".</p>
+  <script>
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'http://localhost:3000/posts');
+    xhr.onload = function () {
+      if (xhr.status === 200) {
+        console.log(xhr);
+        // lire et parser le JSON
+        // enregistrer dans un tableau
+        var parsedJSON = JSON.parse(xhr.responseText);
+        console.log(parsedJSON);
+        // parcourir et créer dynamiquement un élément li
+        var postsList = document.getElementById("posts");
+        parsedJSON.forEach((currentPost) => {
+          // inserer dans ul
+          postsList.appendChild(createPostElement(currentPost));
+        })
+      } else {
+        alert('Request failed.  Returned status of ' + xhr.status);
+      }
+    };
+    xhr.send();
+
+    function createPostElement(post) {
+      var element = document.createElement("li")
+      // ajouter le contenu dans le li
+      var elementTitle = document.createTextNode(post.title);
+      var elementLink = document.createElement("a");
+      var linkText = document.createTextNode("ouvrir");
+      elementLink.appendChild(linkText);
+      elementLink.title = "voir le contenu du post";
+      elementLink.href = "/post.html";
+      element.appendChild(elementTitle);
+      element.appendChild(elementLink);
+      return element;
+    }
+  </script>
+</body>
+
+</html>
